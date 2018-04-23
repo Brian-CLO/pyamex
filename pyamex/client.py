@@ -74,7 +74,7 @@ class AmexClient:
 
         accounts = [ 
                     self.create_account(account)
-                    for account in xml_tree.find('CardAccounts') 
+                    for account in xml_tree.iter('CardAccounts')
                    ]
 
         return accounts  
@@ -98,21 +98,23 @@ class AmexClient:
         account_data = dict()
         account_data['client'] = self
 
-        for param in account_tree.find('CardData'):
-            name = param.attrib['name']
-            account_data[name] = param.text
+        for param in account_tree.iter('CardData'):
+            name = param.get('name',"NA")
+            if name != "NA":
+                account_data[name] = param.text
 
-        for summary_element in account_tree.find('AccountSummaryData'):
+        for summary_element in account_tree.iter('AccountSummaryData'):
             key = 'value' if 'value' in summary_element.attrib else 'formattedValue'
-            name = summary_element.attrib['name']
-            account_data[name] = summary_element.attrib[key]
+            name = summary_element.get('name',"NA")
+            if name != "NA":
+                account_data[name] = summary_element.attrib[key]
 
         # Extract the loyalty programmes from the XML
-        for element in account_tree.findall('LoyaltyData/RewardsData/param'):
-            name = element.attrib['label']
-            value = element.attrib['formattedValue'].replace(',', '')
-            loyalty_programme = LoyaltyProgramme(name, value)
-            self.loyalty_programmes.append(loyalty_programme)
+        # for element in account_tree.findall('LoyaltyData/RewardsData/param'):
+        #     name = element.attrib['label']
+        #     value = element.attrib['formattedValue'].replace(',', '')
+        #     loyalty_programme = LoyaltyProgramme(name, value)
+        #     self.loyalty_programmes.append(loyalty_programme)
 
 
         return CardAccount(account_data)
