@@ -56,7 +56,7 @@ class CardAccount:
 
         for period in billing_periods:
             options = { 'PayLoadText' : self.client.transactions_request_xml(
-                                                 card_index=self.card_index, 
+                                                 card_index=0, 
                                                  billing_period=period, 
                                                  transaction_type=transaction_type)}
 

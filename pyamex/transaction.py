@@ -14,7 +14,7 @@ class Transaction:
         transaction : xml.etree.cElementTree.ElementTree
             Transaction XML element from the web query
         """
-        charge_date = transaction.find('TransChargeDate').text
+        charge_date = transaction.find('*[@name="chargeDate"]').text
 
         date_format = '%m/%d/%y'
         if charge_date:
@@ -23,13 +23,13 @@ class Transaction:
             charge_date = transaction.find('*[@name="chargeDate"]').text
             self.date = datetime.datetime.strptime(charge_date, date_format)
 
-        self.narrative = transaction.find('TransDesc').text
+        self.narrative = transaction.find('*[@name="transDesc"]').text
 
         # These two were in the Ruby code but don't appear to work any more
         #self.description = transaction.find('*[@name="TransDesc"]').text
         #self.reference_number = transaction.find('*[@name="transRefNo"]').text
 
-        self.trans_amount = float(transaction.find('TransAmount').text)
+        self.trans_amount = float(transaction.find('*[@name="transcationAmt"]').text.replace(',',''))
 
         self.extra_details = dict()
         for detail in transaction.findall('TransExtDetail/ExtDetailElement'):
