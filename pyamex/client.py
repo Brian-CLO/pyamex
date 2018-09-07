@@ -60,9 +60,12 @@ class AmexClient:
         # get the summary data
         options = { 'PayLoadText' : self.request_xml() }
 
+        print(self.url)
+        print(options)
+
         response = requests.get(self.url, params=options) \
                            .content
-
+        print(response)
         xml_tree = xml.etree.cElementTree.fromstring(response)
 
         status = xml_tree.find('ServiceResponse/Status').text
